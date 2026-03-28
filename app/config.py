@@ -4,6 +4,8 @@ class Settings:
 
     OCR_LANG = "en"
 
-    MAX_UPLOAD_FILES = 3
+    MAX_UPLOAD_FILES = 4
+    
+    MAX_SIZE = 5 * 1024 * 1024  # 5MB
 
 settings = Settings()
