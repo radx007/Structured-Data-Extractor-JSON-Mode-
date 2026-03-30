@@ -50,7 +50,7 @@ class DocumentRouter:
         
         return best_match if scores[best_match] > 0 else "unknown"
 
-    def process_ocr_results(self, markdown_text: str) -> str:
+    def Classify_documents(self, markdown_text: str) -> str:
         """
         Returns the single document type for the current file.
         """
