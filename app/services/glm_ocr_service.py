@@ -15,10 +15,11 @@ async def run_glm_ocr_stream(image_bytes: bytes) -> AsyncGenerator[str, None]:
             return ollama.generate(
                 model="glm-ocr",
                 prompt=(
-                     "Extract all text, tables, stamps, and handwritten notes from this document. "
-                     "Return a structured HTML table or JSON object preserving the layout of fields. "
-                     "If a table exists, use <table>...</table> tags. If fields exist, return them as key-value pairs. "
-                     "Be as accurate as possible even if the text is small or blurry."
+                    # "recognize everything"
+                     "Extract all text, tables, stamps, and handwritten notes from this document. in a structured format. dont miss any details. "
+                    #  "Return a structured HTML table or JSON object preserving the layout of fields. "
+                    #  "If a table exists, use <table>...</table> tags. If fields exist, return them as key-value pairs. "
+                    #  "Be as accurate as possible even if the text is small or blurry."
                 ),
                 images=[image_bytes],
                 stream=True,  
