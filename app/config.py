@@ -9,177 +9,163 @@ class Settings:
     MAX_SIZE = 5 * 1024 * 1024  # 5MB
 
     _packing_list = {
-                    "type_document": "packing_list",
-                    "donnees_extraites": {
-                        "destinataire": "string",
-                        "passport": "string",
-                        "numero_s_c": "string",
-                        "numero_facture": "string",
-                        "numero_packing_list": "string",
-                        "date": "date",
-                        "expediteur": "string",
-                        "lieu_depart": "string",
-                        "lieu_arrivee": "string",
-                        "pays_origine": "string",
-                        "items": [
-                        {
-                            "marques": "string",
-                            "description": "string",
-                            "vin": "string",
-                            "quantite": "number",
-                            "poids_net_kg": "number",
-                            "poids_brut_kg": "number",
-                            "volume_m3": "number"
-                        }
-                        ],
-                        "totaux": {
-                        "quantite": "number",
-                        "poids_net_kg": "number",
-                        "poids_brut_kg": "number",
-                        "volume_m3": "number"
-                        }
-                    }
-                    }
+        "extracted_data": {
+            "consignee": "string",
+            "passport": "string",
+            "sc_number": "string",
+            "invoice_number": "string",
+            "packing_list_number": "string",
+            "date": "date",
+            "departure_location": "string",
+            "arrival_location": "string",
+            "items": [
+                {
+                    "marks": "string",
+                    "description": "string",
+                    "vin": "string",
+                    "quantity": "number",
+                    "net_weight_kg": "number",
+                    "gross_weight_kg": "number",
+                    "volume_m3": "number"
+                }
+            ],
+            "totals": {
+                "quantity": "number",
+                "net_weight_kg": "number",
+                "gross_weight_kg": "number",
+                "volume_m3": "number"
+            }
+        }
+    }
+                    
     _certificate_of_origin = {
-                            "type_document": "certificate_of_origin",
-                            "donnees_extraites": {
-                                "numero_certificat": "string",
-                                "verification": "string",
-                                "exportateur": {
-                                "nom": "string",
-                                "adresse": "string",
-                                "pays": "string"
-                                },
-                                "destinataire": {
-                                "nom": "string",
-                                "passport": "string",
-                                "nin": "string",
-                                "email": "string",
-                                "telephone": "string",
-                                "adresse": "string",
-                                "pays": "string"
-                                },
-                                "transport": {
-                                "mode": "string",
-                                "port_depart": "string",
-                                "port_arrivee": "string",
-                                "pays_depart": "string",
-                                "pays_arrivee": "string"
-                                },
-                                "pays_destination": "string",
-                                "marchandises": [
-                                {
-                                    "marques": "string",
-                                    "description": "string",
-                                    "vin": "string",
-                                    "modele": "string",
-                                    "annee_fabrication": "number",
-                                    "fabricant": "string",
-                                    "poids_unitaire_kg": "number",
-                                    "quantite": "number"
-                                }
-                                ],
-                                "classification": {
-                                "hs_code": "string"
-                                },
-                                "facture": {
-                                "numero_facture": "string",
-                                "date_facture": "date"
-                                }
-                            }
-                            }
+        "extracted_data": {
+            "certificate_number": "string",
+            "verification": "string",
+            "exporter": {
+                "name": "string",
+                "address": "string",
+                "country": "string"
+            },
+            "consignee": {
+                "name": "string",
+                "passport": "string",
+                "nin": "string",
+                "email": "string",
+                "phone": "string",
+                "address": "string",
+                "country": "string"
+            },
+            "transport": {
+                "mode": "string",
+                "port_of_departure": "string",
+                "port_of_arrival": "string",
+                "country_of_departure": "string",
+                "country_of_arrival": "string"
+            },
+            "destination_country": "string",
+            "goods": [
+                {
+                    "marks": "string",
+                    "description": "string",
+                    "vin": "string",
+                    "model": "string",
+                    "manufacturing_year": "number",
+                    "manufacturer": "string",
+                    "unit_weight_kg": "number",
+                    "quantity": "number"
+                }
+            ],
+            "classification": {
+                "hs_code": "string"
+            },
+            "invoice": {
+                "invoice_number": "string",
+                "invoice_date": "date"
+            }
+        }
+    }
     _invoice = {
-                "type_document": "invoice",
-                "donnees_extraites": {
-                    "exportateur": {
-                    "nom": "string",
-                    "adresse": "string",
-                    "pays": "string"
-                    },
-                    "destinataire": {
-                    "nom": "string",
-                    "passport": "string"
-                    },
-                    "numero_s_c": "string",
-                    "numero_facture": "string",
-                    "date_facture": "date",
-                    "termes_commerciaux": "string",
-                    "transport": {
-                    "lieu_depart": "string",
-                    "lieu_arrivee": "string",
-                    "pays_depart": "string",
-                    "pays_arrivee": "string"
-                    },
-                    "origine": {
-                    "pays_origine": "string",
-                    "hs_code": "string"
-                    },
-                    "marchandises": [
-                    {
-                        "marques": "string",
-                        "description": "string",
-                        "vin": "string",
-                        "quantite": "number",
-                        "prix_unitaire": "number",
-                        "montant": "number",
-                        "devise": "string"
-                    }
-                    ],
-                    "frais": {
-                    "fret_maritime": "number",
-                    "autres_frais": "number"
-                    },
-                    "totaux": {
-                    "quantite_totale": "number",
-                    "montant_total": "number",
-                    "devise": "string",
-                    "montant_total_lettres": "string"
-                    }
+        "extracted_data": {
+            "invoice_number": "string",
+            "invoice_date": "date",
+            "sc_number": "string",
+            "consignee": {
+                "name": "string",
+                "passport": "string"
+            },
+            "transport": {
+                "arrival_location": "string",
+                "country_of_departure": "string",
+                "country_of_arrival": "string"
+            },
+
+            "origin": {
+                "country_of_origin": "string",
+                "hs_code": "string"
+            },
+            "items": [
+                {
+                    "marks": "string",
+                    "description": "string",
+                    "vin": "string",
+                    "quantity": "number",
+                    "unit_price": "number",
+                    "line_total": "number"
                 }
-                }
-    _technical_details = {
-                        "type_document": "technical_details",
-                        "donnees_extraites": {
-                            "numero_certificat": "string",
-                            "date_emission": "date",
-                            "fabricant": "string",
-                            "marque": "string",
-                            "nom_vehicule": "string",
-                            "modele": "string",
-                            "numero_chassis": "string",
-                            "numero_moteur": "string",
-                            "date_fabrication": "date",
-                            "poids_vehicule_kg": {
-                            "poids_total": "number",
-                            "poids_a_vide": "number",
-                            "charge_utile": "number"
-                            },
-                            "capacite": {
-                            "nombre_places": "number",
-                            "capacite_passagers": "number"
-                            },
-                            "performance": {
-                            "vitesse_max_kmh": "number",
-                            "puissance_moteur_kw": "number"
-                            },
-                            "remorquage": {
-                            "capacite_remorquage_max_kg": "number",
-                            "poids_remorque_autorise_kg": "number"
-                            },
-                            "equipements": {
-                            "abs_modele": "string",
-                            "abs_fabricant": "string",
-                            "options": "string",
-                            "systeme_edr": "boolean"
-                            },
-                            "conformite": {
-                            "norme": "string",
-                            "organisme_certification": "string"
-                            },
-                            "qr_code": "string",
-                            "remarques": "string"
-                        }
-                        }
+            ],
+            "charges": {
+                "freight_cost": "number"
+            },
+            "totals": {
+                "total_quantity": "number",
+                "total_amount": "number",
+                "currency": "string",
+                "amount_in_words": "string"
+            }
+        }
+    }
+    _technical_details ={
+        "extracted_data": {
+            "certificate_number": "string",
+            "issue_date": "string",
+            "manufacturer": "string",
+            "brand": "string",
+            "vehicle_name": "string",
+            "model": "string",
+            "chassis_number": "string",
+            "engine_model": "string",
+            "engine_number": "string",
+            "fuel_type": "string",
+            "displacement_ml": "number",
+            "power_kw": "number",
+            "emission_standard": "string",
+            "fuel_consumption": "number",
+            "dimensions_mm": {
+            "length": "number",
+            "width": "number",
+            "height": "number"
+            },
+            "number_of_tires": "number",
+            "tire_specifications": "string",
+            "wheelbase_mm": "number",
+            "axle_load_kg": "string",
+            "number_of_axles": "number",
+            "steering_type": "string",
+            "gross_weight_kg": "number",
+            "curb_weight_kg": "number",
+            "rated_payload_kg": "number",
+            "max_towing_capacity_kg": "number",
+            "passenger_capacity": "number",
+            "max_speed_kmh": "number",
+            "manufacturing_date": "string",
+            "abs_model": "string",
+            "abs_manufacturer": "string",
+            "edr_system": "boolean",
+            "remarks": "string",
+            "manufacturer_address": "string"
+        }
+    }
 
     schemas = {
         "packing_list": _packing_list,
@@ -190,63 +176,242 @@ class Settings:
 
     instructions = {
         "packing_list": (
-            "PRIMARY TASK: Extract all header and footer data. "
-            "1. DESTINATAIRE: You MUST extract the 'Name' and 'Identity' (Passport/NIN). Strip 'Passport:' prefix; return ONLY the 9+ digit number. "
-            "2. TRANSPORT: Map 'lieu_depart' as the Origin Port (Loading) and 'lieu_arrivee' as the Destination Port (Skikda). "
-            "3. DATE: Convert any date format found to 'YYYY-MM-DD'. "
-            "4. ITEMS ARRAY: For each row, map 'vin' (17 chars), 'description' (Brand + Model only), and 'marques' (Literal 'N/M'). "
-            "   - Remove 'VIN CODE:' from the description. "
-            "   - Convert weights/volumes to clean Floats and 'quantite' to Integer. "
-            "5. TOTAUX: This section is MANDATORY. Extract the final sums of Qty, Weight, and Volume from the document footer. "
-            "   - If the footer is unreadable, you MUST sum the item rows manually to populate these fields. "
-            "6. FINAL RULE: Do not return 'None' for fields present in the text. Set missing data to null."
+            "TASK: Extract structured data from a packing list document.\n\n"
+
+            "STRICT OUTPUT RULES:\n"
+            "- Return ONLY valid JSON.\n"
+            "- Do NOT add explanations.\n"
+            "- Do NOT leave fields null if the value can be derived from the text.\n\n"
+
+            "1. CONSIGNEE:\n"
+            "- Extract 'consignee' name.\n"
+            "- Extract 'passport' (or NIN).\n"
+            "- Keep ONLY digits for passport.\n\n"
+
+            "2. TRANSPORT:\n"
+            "- 'departure_location' = origin port.\n"
+            "- 'arrival_location' = destination port.\n\n"
+
+            "3. DATE:\n"
+            "- Convert to format YYYY-MM-DD.\n\n"
+
+            "4. ITEMS ARRAY (VERY IMPORTANT):\n"
+            "- Extract ALL rows.\n"
+            "- 'vin' MUST be exactly 17 characters.\n"
+            "- 'description' = vehicle model only (remove marketing words like 'Youth Fashion Edition').\n"
+            "- 'marks' = 'N/M' if present, else null.\n"
+            "- 'quantity' = integer.\n"
+            "- 'net_weight_kg', 'gross_weight_kg', 'volume_m3' = numeric.\n\n"
+
+            "5. TOTALS (CRITICAL LOGIC):\n"
+            "- ALWAYS fill totals.\n"
+            "- FIRST: try to extract totals from the document footer.\n"
+            "- IF totals are missing OR null:\n"
+            "  → compute totals by summing ALL items:\n"
+            "     total_quantity = sum(quantity)\n"
+            "     total_net_weight = sum(net_weight_kg)\n"
+            "     total_gross_weight = sum(gross_weight_kg)\n"
+            "     total_volume = sum(volume_m3)\n"
+            "- NEVER leave totals null if items exist.\n\n"
+
+            "6. SANITIZATION:\n"
+            "- Remove units (KG, M3).\n"
+            "- Keep only numbers.\n\n"
+
+            "7. FINAL RULE:\n"
+            "- Do NOT hallucinate new data.\n"
+            "- BUT computed totals from items are VALID and REQUIRED.\n"
         ),
         "certificate_of_origin": (
-            "Map the OCR text to the schema by identifying the 'numero_certificat' (unique document ID) and the 'verification' URL or authority code. "
-            "In 'donnees_extraites.destinataire', parse the identity block for 'nom', 'passport', 18-digit 'nin', 'email', and 'telephone'—extract values following these specific labels. "
-            "For 'transport', dynamically map the 'FROM' location to 'port_depart' and 'TO' location to 'port_arrivee', identifying countries of origin and destination from the text. "
-            "In the 'marchandises' array, isolate the 17-character 'vin', the alphanumeric 'modele', and 'annee_fabrication' from the technical description block. "
-            "In 'marchandises', extract the Commercial Name (Brand + Model name, e.g., 'MG5') into 'description'. "
-            "Map 'hs_code' from the classification column and link 'numero_facture' and 'date_facture' (normalized to YYYY-MM-DD) from the invoice reference section. "
-            "Assign 'N/M' literally to 'marques' if present; set truly missing fields to null without hallucinating data."
-            "FINAL RULE: Do not return 'None' for fields present in the text. Set missing data to null."
+            "PRIMARY TASK: Extract structured data from the certificate of origin. "
+
+            "1. CERTIFICATE: "
+            "   - Extract 'certificate_number'. "
+            "   - Extract 'verification' (URL or authority). "
+
+            "2. EXPORTER: "
+            "   - Extract 'name', 'address', and 'country'. "
+            "   - Clean obvious OCR errors in names (e.g., remove extra leading characters like 'ZSAIC' → 'SAIC'). "
+
+            "3. CONSIGNEE: "
+            "   From the identity block extract: "
+            "   - 'name' "
+            "   - 'passport' (digits only) "
+            "   - 'nin' (exactly 18 digits) "
+            "   - 'email' "
+            "   - 'phone' "
+            "   - 'address' "
+            "   - 'country' "
+
+            "4. TRANSPORT: "
+            "   - 'port_of_departure' = text after 'FROM' "
+            "   - 'port_of_arrival' = text after 'TO' "
+            "   - 'mode' = SEA / AIR / ROAD (normalize to uppercase) "
+            "   - Extract 'country_of_departure' and 'country_of_arrival' from ports if present "
+
+            "5. GOODS ARRAY: "
+            "   For each item: "
+            "   - 'vin' MUST be exactly 17 characters. "
+            "   - 'model' = alphanumeric vehicle model code. "
+            "   - 'manufacturing_year' = numeric value. "
+            "   - 'description' MUST be the FULL commercial name (e.g., 'MG5 180DVVT MANUAL YOUTH FASHION EDITION'). "
+            "   - Do NOT truncate description to brand only. "
+            "   - 'manufacturer' = company name (clean OCR noise if needed). "
+            "   - 'unit_weight_kg' = numeric value only. "
+            "   - 'quantity' = integer. "
+            "   - 'marks' = 'N/M' if present. "
+
+            "6. CLASSIFICATION: "
+            "   - Extract 'hs_code'. "
+
+            "7. INVOICE: "
+            "   - Extract 'invoice_number'. "
+            "   - Extract 'invoice_date' and normalize to 'YYYY-MM-DD'. "
+
+            "8. DESTINATION: "
+            "   - Extract 'destination_country'. "
+
+            "9. SANITIZATION: "
+            "   - Remove units like KG. "
+            "   - Keep only numeric values where required. "
+
+            "10. FINAL RULES: "
+            "   - Do NOT hallucinate values. "
+            "   - If a value exists → NEVER return null. "
+            "   - If missing → return null (NOT empty string). "
         ),
         "commercial_invoice": (
-            "PRIMARY TASK: Perform a Financial Audit and extraction of all trade terms. "
-            "1. HEADER: Identify 'numero_facture' and 'date_facture'. MANDATORY: Normalize date to 'YYYY-MM-DD'. "
-            "2. ENTITIES: Extract 'vendeur' (Exporter) and 'acheteur' (Importer Name + Identity). Clean 'Identity' to raw numbers only. "
-            "3. TRADE LOGIC: Identify 'incoterm' (FOB, CFR, CIF, etc.) and map 'port_chargement' (Origin) vs 'port_dechargement' (Destination). "
-            "4. ITEMS ARRAY: For every vehicle, extract 'vin' (17 chars), 'description' (Brand + Model only), 'quantite' (Integer), 'prix_unitaire' (Float), and 'montant_ligne' (Qty * Unit Price). "
-            "5. ADDITIONAL COSTS: Identify 'frais_fret' (Freight) and 'frais_assurance' (Insurance) if listed separately. "
-            "6. FINANCIAL TOTALS: "
-            "   - Extract 'montant_total_lettres' (The full Grand Total written in WORDS). "
-            "   - Extract 'montant_total' (The Grand Total in NUMBERS). "
-            "   - DEVISE: Identify the ISO currency code (USD, EUR). "
-            "7. VERIFICATION RULE: The 'montant_global_chiffres' MUST reflect the sum of all item amounts + additional costs. If they differ, flag in a 'notes' field. "
-            "8. SANITIZATION: Strip all symbols ($, €) and unit labels (USD) from numbers. Return null only if data is truly absent."
-            "FINAL RULE: Do not return 'None' for fields present in the text. Set missing data to null."
+            "Extract structured data from the document into the schema. Do not guess or invent missing values. "
+
+            "HEADER:"
+            "- Extract invoice_number, sc_number, invoice_date (normalize to YYYY-MM-DD). "
+
+            "PARTIES:"
+            "- Extract consignee name and passport (digits only). "
+
+            "TRANSPORT:"
+            "- Extract departure and arrival locations. "
+            "- Extract country_of_departure and country_of_arrival (country names only). "
+
+            "ORIGIN:"
+            "- Extract country_of_origin and hs_code exactly as written. "
+
+            "ITEMS (GENERAL RULE):"
+            "- Identify each product line as a structured record. "
+            "- Each item may contain: product identity, reference codes, quantity, price, and totals. "
+
+            "FIELD EXTRACTION RULE:"
+            "- marks = label or prefix information if present (e.g., N/M). "
+            "- description = main product name BEFORE any technical identifier or code. "
+            "  * Must represent the human-readable product name. "
+            "  * Must NOT include serial numbers, VINs, or reference codes. "
+            "- vin = any unique structured identifier if present (e.g., VIN, serial number). "
+            "- quantity = integer value. "
+            "- unit_price = numeric value. "
+            "- line_total = numeric value. "
+
+            "ITEM SEPARATION RULE:"
+            "- If multiple fields are packed into one string, separate by role not position. "
+            "- Identify product name first, then identifiers, then numeric values. "
+
+            "CHARGES:"
+            "- Extract any transport or freight-related costs if present. "
+
+            "TOTALS:"
+            "- total_quantity = sum of item quantities. "
+            "- total_amount = sum of item totals + charges if applicable. "
+            "- currency = detect from document. "
+            "- amount_in_words = clean text only (remove filler words like SAY/ONLY). "
+
+            "GENERAL RULES:"
+            "- Never hallucinate missing fields. "
+            "- Never return empty strings → use null only. "
+            "- Do not merge unrelated fields. "
         ),
         "technical_details": (
-            "PRIMARY TASK: High-Precision Engineering & Compliance Extraction. "
-            "1. IDENTITIES: Extract 'numero_chassis' (17-char VIN) and 'numero_moteur' (Engine Serial). "
-            "   CRITICAL: These must be extracted exactly as printed, preserving capitalization. "
-            "2. CHRONOLOGY: Identify 'date_emission' (Certificate Date) and 'date_fabrication' (Production Date). "
-            "   RULE: Strictly normalize all dates to 'YYYY-MM-DD'. "
-            "3. ENTITIES: Map 'fabricant' (Manufacturer Name), 'marque' (Brand, e.g., MG), and 'modele' (Technical Code). "
-            "4. WEIGHT LOGIC (METRIC): "
-            "   - Extract 'poids_total' (GVWR) and 'poids_a_vide' (Curb Weight). "
-            "   - CALCULATED FIELD: Set 'charge_utile' (Payload) as (poids_total - poids_a_vide). "
-            "   - Ensure all values are clean Integers/Numbers (strip 'KG'). "
-            "5. CAPACITIES & PERFORMANCE: "
-            "   - Extract 'nombre_places' and 'capacite_passagers'. "
-            "   - Map 'vitesse_max_kmh' and 'puissance_moteur_kw' (Clean numbers only). "
-            "6. EQUIPMENT & SAFETY: "
-            "   - Identify 'abs_modele' and 'abs_fabricant'. "
-            "   - BOOLEAN LOGIC: Set 'systeme_edr' to true ONLY if the text explicitly mentions 'Event Data Recording' or 'EDR'. "
-            "7. COMPLIANCE: Identify the 'norme' (e.g., China VI, Euro 6) and the 'organisme_certification'. "
-            "8. REMARKS: Capture any optional equipment (Sunroof, etc.) in the 'remarques' field. "
-            "9. SANITIZATION: Missing numeric fields must be null. Strip all units (KW, KM/H, KG). "
-            "FINAL RULE: This is a legal compliance document. Do not hallucinate data. If a field is missing, return null."
+            "TASK: Extract vehicle technical data into structured JSON.\n\n"
+
+            "OUTPUT RULES:\n"
+            "- Return ONLY valid JSON.\n"
+            "- All fields must exist.\n"
+            "- If missing → null.\n\n"
+
+            "CRITICAL EXTRACTION RULES:\n"
+            "- Copy values EXACTLY from text.\n"
+            "- Do NOT correct spelling.\n"
+            "- Do NOT infer or calculate.\n"
+            "- Remove units (kg, km/h, mm, kW) from numbers.\n"
+            "- Keep dates exactly as written.\n\n"
+
+            "IDENTITY LOCKING (VERY IMPORTANT):\n"
+            "- chassis_number MUST be exactly 17 characters.\n"
+            "- engine_number MUST be copied exactly.\n"
+            "- certificate_number MUST be copied exactly (no missing digits).\n\n"
+
+            "FIELD MAPPING:\n"
+            "- certificate_number → Certificate Number.\n"
+            "- issue_date → Issuance Date.\n"
+            "- manufacturer → Vehicle Manufacturer Name.\n\n"
+
+            "BRAND / VEHICLE NAME RULE:\n"
+            "- If format is 'Brand/Vehicle Name':\n"
+            "  → brand = text BEFORE '/'\n"
+            "  → vehicle_name = text AFTER '/'\n"
+            "- If no '/', then:\n"
+            "  → brand = first word\n"
+            "  → vehicle_name = full remaining text\n\n"
+
+            "- model → Vehicle Model.\n"
+            "- chassis_number → Vehicle Identification Number.\n"
+            "- engine_model → Engine Model.\n"
+            "- engine_number → Engine Number.\n"
+            "- fuel_type → Fuel Type.\n"
+            "- displacement_ml → Displacement value.\n"
+            "- power_kw → Power value.\n"
+            "- emission_standard → Emission Standard.\n"
+            "- fuel_consumption → Fuel Consumption.\n\n"
+
+            "DIMENSIONS RULE:\n"
+            "- Extract exactly 3 numbers from 'Overall Dimensions':\n"
+            "  → length, width, height (in order).\n\n"
+
+            "- number_of_tires → Number of Tires.\n"
+            "- tire_specifications → Tire Specifications.\n"
+            "- wheelbase_mm → Wheelbase.\n"
+            "- axle_load_kg → Axle Load (KEEP as string, e.g. '826/818').\n"
+            "- number_of_axles → Number of Axles.\n"
+            "- steering_type → Steering Type.\n\n"
+
+            "- gross_weight_kg → Gross Vehicle Weight.\n"
+            "- curb_weight_kg → Curb Weight.\n"
+            "- rated_payload_kg → Rated Payload.\n"
+            "- max_towing_capacity_kg → Maximum Towing Capacity.\n"
+            "- passenger_capacity → Rated Passenger Capacity.\n"
+            "- max_speed_kmh → Maximum Design Speed.\n"
+            "- manufacturing_date → Date of Vehicle Manufacture.\n\n"
+
+            "ABS EXTRACTION (STRICT):\n"
+            "- Find text pattern: 'ABS model and manufacturer:'\n"
+            "- abs_model = first value after this text\n"
+            "- abs_manufacturer = remaining text after comma\n"
+            "- Do NOT duplicate into remarks\n\n"
+
+            "EDR RULE:\n"
+            "- edr_system = true ONLY if 'EDR' appears in text\n"
+            "- otherwise false\n\n"
+
+            "REMARKS RULE:\n"
+            "- Extract ONLY optional equipment and descriptive text\n"
+            "- EXCLUDE structured values (ABS, power, VIN, etc.)\n"
+            "- Keep text clean (no repetition)\n\n"
+
+            "ADDRESS:\n"
+            "- manufacturer_address → Vehicle Manufacturing Unit Address\n\n"
+
+            "FINAL RULE:\n"
+            "- Do NOT hallucinate\n"
+            "- Do NOT merge fields\n"
+            "- Only extract explicitly present data\n"
         ),
         "unknown": "Perform a general extraction of all visible entities into a flat JSON structure."
     }
