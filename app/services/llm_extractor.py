@@ -4,7 +4,7 @@ import json
 from typing import  Dict, Any, Optional
 from app.utils.logging import logger
 
-async def run_qwen_mapper_stream(
+async def run_llm_extraction(
     ocr_text: str,
     schema: Dict[str, Any],
     custom_instructions: Optional[str] = None
@@ -42,7 +42,7 @@ async def run_qwen_mapper_stream(
     def call_ollama_sync():
         try:
             return ollama.generate(
-                model="llama3.2:3b", 
+                model="llama3.2:3b-instruct-q4_K_M", 
                 system=final_system_msg,
                 prompt=prompt,
                 stream=False,
