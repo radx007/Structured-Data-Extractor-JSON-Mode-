@@ -4,7 +4,7 @@ from app.services.llm_extractor import run_llm_extraction
 from app.services.reconciliation.report_builder import build_final_report
 from app.services.validation.parser import validate_document
 from app.utils.logging import logger
-from app.config import settings
+from app.config import settings, SCHEMAS, PROMPTS
 
 
 
@@ -90,8 +90,8 @@ async def process_documents(files):
         try:
             final_json = await run_llm_extraction(
                 ocr_input,
-                settings.schemas.get(doc_type, {}),
-                settings.instructions.get(doc_type, "")
+                SCHEMAS.get(doc_type, {}),
+                PROMPTS.get(doc_type, "")
             )
 
             extracted = final_json.get("extracted_data", final_json)

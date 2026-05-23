@@ -1,0 +1,41 @@
+TECHNICAL_DETAILS_SCHEMA = {
+        "extracted_data": {
+            "certificate_number": "string",
+            "issue_date": "string",
+            "manufacturer": "string",
+            "brand": "string",
+            "vehicle_name": "string",
+            "model": "string",
+            "chassis_number": "string",
+            "engine_model": "string",
+            "engine_number": "string",
+            "fuel_type": "string",
+            "displacement_ml": "number",
+            "power_kw": "number",
+            "emission_standard": "string",
+            "fuel_consumption": "number",
+            "dimensions_mm": {
+            "length": "number",
+            "width": "number",
+            "height": "number"
+            },
+            "number_of_tires": "number",
+            "tire_specifications": "string",
+            "wheelbase_mm": "number",
+            "axle_load_kg": "string",
+            "number_of_axles": "number",
+            "steering_type": "string",
+            "gross_weight_kg": "number",
+            "curb_weight_kg": "number",
+            "rated_payload_kg": "number",
+            "max_towing_capacity_kg": "number",
+            "passenger_capacity": "number",
+            "max_speed_kmh": "number",
+            "manufacturing_date": "string",
+            "abs_model": "string",
+            "abs_manufacturer": "string",
+            "edr_system": "boolean",
+            "remarks": "string",
+            "manufacturer_address": "string"
+        }
+    }

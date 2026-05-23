@@ -1,0 +1,85 @@
+TECHNICAL_DETAILS_PROMPT = (
+            "TASK: Extract vehicle technical data into structured JSON.\n\n"
+
+            "OUTPUT RULES:\n"
+            "- Return ONLY valid JSON.\n"
+            "- All fields must exist.\n"
+            "- If missing → null.\n\n"
+
+            "CRITICAL EXTRACTION RULES:\n"
+            "- Copy values EXACTLY from text.\n"
+            "- Do NOT correct spelling.\n"
+            "- Do NOT infer or calculate.\n"
+            "- Remove units (kg, km/h, mm, kW) from numbers.\n"
+            "- Keep dates exactly as written.\n\n"
+
+            "IDENTITY LOCKING (VERY IMPORTANT):\n"
+            "- chassis_number MUST be exactly 17 characters.\n"
+            "- engine_number MUST be copied exactly.\n"
+            "- certificate_number MUST be copied exactly (no missing digits).\n\n"
+
+            "FIELD MAPPING:\n"
+            "- certificate_number → Certificate Number.\n"
+            "- issue_date → Issuance Date.\n"
+            "- manufacturer → Vehicle Manufacturer Name.\n\n"
+
+            "BRAND / VEHICLE NAME RULE:\n"
+            "- If format is 'Brand/Vehicle Name':\n"
+            "  → brand = text BEFORE '/'\n"
+            "  → vehicle_name = text AFTER '/'\n"
+            "- If no '/', then:\n"
+            "  → brand = first word\n"
+            "  → vehicle_name = full remaining text\n\n"
+
+            "- model → Vehicle Model.\n"
+            "- chassis_number → Vehicle Identification Number.\n"
+            "- engine_model → Engine Model.\n"
+            "- engine_number → Engine Number.\n"
+            "- fuel_type → Fuel Type.\n"
+            "- displacement_ml → Displacement value.\n"
+            "- power_kw → Power value.\n"
+            "- emission_standard → Emission Standard.\n"
+            "- fuel_consumption → Fuel Consumption.\n\n"
+
+            "DIMENSIONS RULE:\n"
+            "- Extract exactly 3 numbers from 'Overall Dimensions':\n"
+            "  → length, width, height (in order).\n\n"
+
+            "- number_of_tires → Number of Tires.\n"
+            "- tire_specifications → Tire Specifications.\n"
+            "- wheelbase_mm → Wheelbase.\n"
+            "- axle_load_kg → Axle Load (KEEP as string, e.g. '826/818').\n"
+            "- number_of_axles → Number of Axles.\n"
+            "- steering_type → Steering Type.\n\n"
+
+            "- gross_weight_kg → Gross Vehicle Weight.\n"
+            "- curb_weight_kg → Curb Weight.\n"
+            "- rated_payload_kg → Rated Payload.\n"
+            "- max_towing_capacity_kg → Maximum Towing Capacity.\n"
+            "- passenger_capacity → Rated Passenger Capacity.\n"
+            "- max_speed_kmh → Maximum Design Speed.\n"
+            "- manufacturing_date → Date of Vehicle Manufacture.\n\n"
+
+            "ABS EXTRACTION (STRICT):\n"
+            "- Find text pattern: 'ABS model and manufacturer:'\n"
+            "- abs_model = first value after this text\n"
+            "- abs_manufacturer = remaining text after comma\n"
+            "- Do NOT duplicate into remarks\n\n"
+
+            "EDR RULE:\n"
+            "- edr_system = true ONLY if 'EDR' appears in text\n"
+            "- otherwise false\n\n"
+
+            "REMARKS RULE:\n"
+            "- Extract ONLY optional equipment and descriptive text\n"
+            "- EXCLUDE structured values (ABS, power, VIN, etc.)\n"
+            "- Keep text clean (no repetition)\n\n"
+
+            "ADDRESS:\n"
+            "- manufacturer_address → Vehicle Manufacturing Unit Address\n\n"
+
+            "FINAL RULE:\n"
+            "- Do NOT hallucinate\n"
+            "- Do NOT merge fields\n"
+            "- Only extract explicitly present data\n"
+        )

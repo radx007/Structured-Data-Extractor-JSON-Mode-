@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from app.api.routes import router
+from app.config import settings
 
 app = FastAPI(
-    title="Vehicle Document AI",
-    description="OCR + LLM pipeline for vehicle import validation",
-    version="1.0"
+    title=settings.APP_NAME,
+    description=settings.description,
+    version=settings.version
 )
 
 app.include_router(router)
