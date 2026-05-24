@@ -1,6 +1,4 @@
-from app.services.classifier import DocumentRouter
-from app.services.glm_ocr import run_glm_ocr
-from app.services.llm_extractor import run_llm_extraction
+from app.services import DocumentRouter, run_glm_ocr, run_llm_extraction
 from app.services.reconciliation.report_builder import build_final_report
 from app.services.validation.parser import validate_document
 from app.utils.logging import logger

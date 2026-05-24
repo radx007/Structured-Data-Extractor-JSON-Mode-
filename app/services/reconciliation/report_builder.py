@@ -1,10 +1,6 @@
-# app/services/reconciliation/report_builder.py
-
 from typing import List, Dict, Any
 
-from app.services.reconciliation.vin_reconciliation import reconcile_vins
-from app.services.reconciliation.cross_document_checks import run_cross_document_checks
-from app.services.reconciliation.algerian_rules import run_algerian_rules
+from app.services.reconciliation import reconcile_vins, run_cross_document_checks, run_algerian_rules
 
 
 def build_final_report(documents: List[Dict[str, Any]]) -> Dict[str, Any]:

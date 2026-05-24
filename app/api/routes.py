@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import StreamingResponse
 from typing import List
 import json
-from app.pipeline.document_pipeline import process_documents
+from app.pipeline import process_documents
 
 router = APIRouter()
 

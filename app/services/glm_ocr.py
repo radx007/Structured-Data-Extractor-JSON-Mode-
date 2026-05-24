@@ -2,6 +2,7 @@ import asyncio
 import os
 import subprocess
 import tempfile
+from app.config import settings
 from app.utils.logging import logger
 
 async def run_glm_ocr(image_bytes: bytes) -> str:
@@ -13,15 +14,15 @@ async def run_glm_ocr(image_bytes: bytes) -> str:
         temp_image_path = temp_image.name
 
     try:
-        executable = "C:\\llama\\llama-mtmd-cli.exe"
+        
         cmd_args = [
-            executable,
-            "-m", "models/GLM-OCR.Q4_K_M.gguf",
-            "--mmproj", "models/mmproj-GLM-OCR-Q4_K_M.gguf",
+            settings.LLAMA_CLI_PATH,
+            "-m", settings.GLM_OCR_MODEL,
+            "--mmproj", settings.GLM_MMPROJ,
             "--image", temp_image_path,
             "-p", "OCR this",
-            "-ngl", "99",
-            "-c", "4096",
+            "-ngl", str(settings.N_GPU_LAYERS),
+            "-c", str(settings.CONTEXT_SIZE),
             "--flash-attn", "on"
         ]
 
@@ -30,7 +31,7 @@ async def run_glm_ocr(image_bytes: bytes) -> str:
         def run_proc():
             return subprocess.run(
                 cmd_args,
-                cwd="C:\\llama",
+                cwd=settings.LLAMA_DIR,
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
