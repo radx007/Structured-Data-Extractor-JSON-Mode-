@@ -2,6 +2,7 @@ import asyncio
 import ollama
 import json
 from typing import  Dict, Any, Optional
+from app.config import settings
 from app.utils.logging import logger
 
 async def run_llm_extraction(
@@ -38,7 +39,7 @@ async def run_llm_extraction(
     def call_ollama_sync():
         try:
             return ollama.generate(
-                model="llama3.2:3b-instruct-q4_K_M", 
+                model=settings.llm_model,
                 system=final_system_msg,
                 prompt=prompt,
                 stream=False,

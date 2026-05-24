@@ -2,6 +2,8 @@ import json
 import requests
 from typing import Dict, List
 
+from app.config import settings
+
 class DocumentRouter:
     def __init__(self):
         self.doc_types = [
@@ -11,8 +13,8 @@ class DocumentRouter:
             "technical_details",
             "unknown"
         ]
-        self.model = "llama3.2:3b"
-        self.ollama_url = "http://localhost:11434/api/generate"
+        self.model = settings.llm_model
+        self.ollama_url = settings.ollama_url
 
     def classify_documents(self, ocr_results: Dict[str, str]) -> Dict[str, str]:
         """
