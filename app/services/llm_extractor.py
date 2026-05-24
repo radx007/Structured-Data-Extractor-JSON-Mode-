@@ -29,10 +29,6 @@ async def run_llm_extraction(
         "seed": 42
     }
 
-    print("Final System Message for LLM:")
-    print(f"Schema: {schema}")
-    print(f"OCR Text: {ocr_text}")
-
     prompt = (
         f"### TARGET SCHEMA:\n{json.dumps(schema, indent=2)}\n\n"
         f"### SOURCE OCR DATA:\n{ocr_text}\n\n"

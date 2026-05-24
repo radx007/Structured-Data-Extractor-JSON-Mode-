@@ -37,8 +37,8 @@ INVOICE_PROMPT = (
 
             "TOTALS:"
             "- total_quantity = sum of item quantities. "
-            "- total_amount = sum of item totals + charges if applicable. "
-            "- currency = detect from document. "
+            "- total_amount = Extract the final total amount (numeric only). general rule: look for the largest numeric value in the document. "
+            "- currency = Extract the currency (e.g., USD, EUR). "
             "- amount_in_words = clean text only (remove filler words like SAY/ONLY). "
 
             "GENERAL RULES:"

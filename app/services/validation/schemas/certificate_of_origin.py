@@ -22,7 +22,7 @@ class GoodsItem(BaseModel):
 
 
 class InvoiceRef(BaseModel):
-    invoice_number: str
+    invoice_number: Optional[str] 
     invoice_date: date
 
     _date = field_validator("invoice_date", mode="before")(parse_date)

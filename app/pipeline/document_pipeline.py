@@ -65,7 +65,6 @@ async def process_documents(files):
     if ocr_results_dict:
         yield {"type": "phase_started", "phase": "classification", "total_files": len(ocr_results_dict)}
         classifications = router.classify_documents(ocr_results_dict)
-
         for res in results:
             if res.get("status") == "success":
                 doc_type = classifications.get(res["filename"], "unknown")

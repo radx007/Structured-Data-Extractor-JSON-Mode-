@@ -39,7 +39,7 @@ class Charges(BaseModel):
 class Totals(BaseModel):
     total_quantity: float
     total_amount: float
-    currency: str
+    currency: Optional[str] 
     amount_in_words: Optional[str]
 
     @field_validator("total_quantity", "total_amount", mode="before")

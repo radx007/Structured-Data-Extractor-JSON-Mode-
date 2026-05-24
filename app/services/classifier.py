@@ -101,5 +101,4 @@ class DocumentRouter:
             return json.loads(llm_content)
             
         except Exception as e:
-            print(f"Criticial Error in Classification: {e}")
             return {filename: "unknown" for filename in ocr_results.keys()}
