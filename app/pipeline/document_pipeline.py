@@ -15,11 +15,13 @@ async def process_documents(files):
     try:
         # --- PHASE 1: OCR & EXTRACTION (streaming events) ---
         for file in files:
-            if not file.content_type.startswith("image/"):
-                yield {"type": "error", "filename": file.filename, "error": "Only images allowed"}
-                continue
 
             try:
+                content_type = file.content_type or ""
+                if not content_type.startswith("image/"):
+                    yield {"type": "error", "filename": file.filename, "error": "Only images allowed"}
+                    continue
+
                 contents = await file.read()
                 if len(contents) > settings.MAX_SIZE:
                     yield {"type": "error", "filename": file.filename, "error": "File too large"}
