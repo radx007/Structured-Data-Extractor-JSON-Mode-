@@ -9,7 +9,7 @@ class Settings:
     version = "1.0"
 
     # App limits
-    MAX_SIZE = int(os.getenv("MAX_SIZE"))
+    MAX_SIZE = int(os.getenv("MAX_SIZE", 5242880))
     MAX_UPLOAD_FILES = int(os.getenv("MAX_UPLOAD_FILES"))
 
     # LLM config

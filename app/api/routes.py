@@ -15,8 +15,8 @@ async def process_vehicle_documents(
         async for progress_event in process_documents(files):
             yield json.dumps(progress_event) + "\n"
 
-    if len(files) > settings.MAX_UPLOAD_FILES:
-        raise HTTPException(status_code=413, detail="Too many files")
+    if len(files) != settings.MAX_UPLOAD_FILES:
+        raise HTTPException(status_code=413, detail="Invalid number of files ")
     
     return StreamingResponse(
         event_stream(),
