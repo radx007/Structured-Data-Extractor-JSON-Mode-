@@ -33,9 +33,9 @@ async def test_process_documents_success(monkeypatch, invoice_doc):
     def fake_validate(doc):
         return {"status": "success", "data": doc}
 
-    monkeypatch.setattr("app.services.llama_server.LlamaServer.start", lambda self: None)
-    monkeypatch.setattr("app.services.llama_server.LlamaServer.wait_until_ready", lambda self: True)
-    monkeypatch.setattr("app.services.llama_server.LlamaServer.stop", lambda self: None)
+    monkeypatch.setattr("app.utils.llama_server.LlamaServer.start", lambda self: None)
+    monkeypatch.setattr("app.utils.llama_server.LlamaServer.wait_until_ready", lambda self: True)
+    monkeypatch.setattr("app.utils.llama_server.LlamaServer.stop", lambda self: None)
 
     monkeypatch.setattr(dp, "run_glm_ocr", fake_ocr)
     monkeypatch.setattr(dp, "run_llm_json_mapping", fake_llm)
