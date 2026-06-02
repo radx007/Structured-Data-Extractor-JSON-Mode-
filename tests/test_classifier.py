@@ -20,7 +20,15 @@ def test_classify_empty():
 
 def test_classify_ok(monkeypatch):
     def fake_post(*args, **kwargs):
-        payload = {"response": json.dumps({"a.png": "invoice"})}
+        payload = {
+            "choices": [
+                {
+                    "message": {
+                        "content": json.dumps({"a.png": "invoice"})
+                    }
+                }
+            ]
+        }
         return DummyResponse(payload)
 
     monkeypatch.setattr("app.services.classifier.requests.post", fake_post)

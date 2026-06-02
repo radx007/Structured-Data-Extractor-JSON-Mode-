@@ -34,7 +34,7 @@ async def test_process_documents_success(monkeypatch, invoice_doc):
         return {"status": "success", "data": doc}
 
     monkeypatch.setattr(dp, "run_glm_ocr", fake_ocr)
-    monkeypatch.setattr(dp, "run_llm_extraction", fake_llm)
+    monkeypatch.setattr(dp, "run_llm_json_mapping", fake_llm)
     monkeypatch.setattr(dp, "validate_document", fake_validate)
     monkeypatch.setattr(dp, "build_final_report", lambda docs: {"status": "approved"})
     monkeypatch.setattr(dp, "router", SimpleNamespace(classify_documents=lambda x: {"a.png": "invoice"}))
