@@ -17,8 +17,8 @@ class Settings:
     LLM_MODEL_NAME = os.getenv("LLM_MODEL_NAME", "llama3.2:3b-instruct-q4_K_M")
 
     # OCR config
-    N_GPU_LAYERS = int(os.getenv("N_GPU_LAYERS"), 99)
-    CONTEXT_SIZE = int(os.getenv("CONTEXT_SIZE"), 4096)
+    N_GPU_LAYERS = int(os.getenv("N_GPU_LAYERS", 99))
+    CONTEXT_SIZE = int(os.getenv("CONTEXT_SIZE", 4096))
     
     LLAMA_CLI_PATH = os.getenv("LLAMA_CLI_PATH", "C:/llama/llama-mtmd-cli.exe" )
     LLAMA_DIR = os.getenv("LLAMA_DIR", "C:/llama")
