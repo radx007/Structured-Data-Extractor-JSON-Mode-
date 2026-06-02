@@ -10,7 +10,7 @@ class Settings:
 
     # App limits
     MAX_SIZE = int(os.getenv("MAX_SIZE", 5242880))
-    MAX_UPLOAD_FILES = int(os.getenv("MAX_UPLOAD_FILES"))
+    MAX_UPLOAD_FILES = int(os.getenv("MAX_UPLOAD_FILES",4))
 
     # LLM config
     LLAMA_CHAT_URL = os.getenv("LLAMA_CHAT_URL")
