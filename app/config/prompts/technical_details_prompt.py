@@ -36,8 +36,8 @@ TECHNICAL_DETAILS_PROMPT = (
             "- engine_model → Engine Model.\n"
             "- engine_number → Engine Number.\n"
             "- fuel_type → Fuel Type.\n"
-            "- displacement_ml → Displacement value.\n"
-            "- power_kw → Power value.\n"
+            "- displacement_ml → Look for 'Displacement', 'ml', or the first value in 'Displacement/Power' (extract only the number).\n"
+            "- power_kw → Look for 'Power', 'Net Power', 'kW', or the second value in 'Displacement/Power' (extract only the number).\n"
             "- emission_standard → Emission Standard.\n"
             "- fuel_consumption → Fuel Consumption.\n\n"
 
