@@ -1,11 +1,11 @@
 import asyncio
-import ollama
+import requests
 import json
 from typing import  Dict, Any, Optional
 from app.config import settings
 from app.utils.logging import logger
 
-async def run_llm_extraction(
+async def run_llm_json_mapping(
     ocr_text: str,
     schema: Dict[str, Any],
     custom_instructions: Optional[str] = None
@@ -23,39 +23,41 @@ async def run_llm_extraction(
 
     final_system_msg = f"{base_instructions}\nSPECIFIC GUIDANCE: {custom_instructions}" if custom_instructions else base_instructions
 
-    ollama_options = {
-        "num_ctx": 4096, 
-        "temperature": 0.0,
-        "top_p": 0.1,
-        "seed": 42
-    }
-
     prompt = (
         f"### TARGET SCHEMA:\n{json.dumps(schema, indent=2)}\n\n"
         f"### SOURCE OCR DATA:\n{ocr_text}\n\n"
         f"### JSON OUTPUT:"
     )
 
-    def call_ollama_sync():
+    def call_llama_cpp_sync():
         try:
-            return ollama.generate(
-                model=settings.llm_model,
-                system=final_system_msg,
-                prompt=prompt,
-                stream=False,
-                format="json",
-                options=ollama_options,
-                keep_alive="5s" # Keep in memory
-            )
+            payload = {
+                "messages": [
+                    {"role": "system", "content": final_system_msg},
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.0,
+                "top_p": 0.1,
+                "seed": 42,
+                "response_format": {"type": "json_object"},
+                "stream": False
+            }
+            
+            res = requests.post(settings.LLAMA_CHAT_URL, json=payload, timeout=120)
+            res.raise_for_status()
+            
+            data = res.json()
+            return {"response": data["choices"][0]["message"]["content"]}
+            
         except Exception as e:
-            logger.error(f"Ollama Connection Error: {str(e)}")
+            logger.error(f"Llama.cpp Connection Error: {str(e)}")
             return None
 
     loop = asyncio.get_running_loop()
-    response = await loop.run_in_executor(None, call_ollama_sync)
+    response = await loop.run_in_executor(None, call_llama_cpp_sync)
 
     if not response:
-        return {"status": "error", "message": "Ollama service unreachable"}
+        return {"status": "error", "message": "Llama.cpp service unreachable"}
 
     try:
         full_text = response.get("response", "").strip()

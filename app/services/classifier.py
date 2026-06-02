@@ -13,8 +13,7 @@ class DocumentRouter:
             "technical_details",
             "unknown"
         ]
-        self.model = settings.llm_model
-        self.ollama_url = settings.ollama_url
+        self.llama_chat_url = settings.LLAMA_CHAT_URL
 
     def classify_documents(self, ocr_results: Dict[str, str]) -> Dict[str, str]:
         """
@@ -78,27 +77,24 @@ class DocumentRouter:
         )
 
         payload = {
-            "model": self.model,
-            "prompt": prompt,
-            "stream": False,  
-            "format": "json",
-            "options": {
-                "temperature": 0,
-                "stop": ["\n\n"]
-            },
-            "keep_alive": "5m"
+            "messages": [
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.0,
+            "response_format": {"type": "json_object"},
+            "stream": False
         }
 
         try:
             response = requests.post(
-                self.ollama_url,
+                self.llama_chat_url,
                 json=payload,
                 timeout=120
             )
             response.raise_for_status()
             
             raw_response = response.json()
-            llm_content = raw_response.get("response", "{}")
+            llm_content = raw_response["choices"][0]["message"]["content"]
             
             return json.loads(llm_content)
             

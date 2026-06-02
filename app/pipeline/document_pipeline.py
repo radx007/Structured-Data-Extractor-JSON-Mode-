@@ -1,7 +1,8 @@
-from app.services import DocumentRouter, run_glm_ocr, run_llm_extraction
+from app.services import DocumentRouter, run_glm_ocr, run_llm_json_mapping
 from app.services.reconciliation.report_builder import build_final_report
 from app.services.validation.parser import validate_document
 from app.utils.logging import logger
+from app.utils.llama_server import LlamaServer
 from app.config import settings, SCHEMAS, PROMPTS
 
 
@@ -13,7 +14,7 @@ async def process_documents(files):
     final_output = []
 
     try:
-        # --- PHASE 1: OCR & EXTRACTION (streaming events) ---
+        # --- PHASE 1: OCR & EXTRACTION ---
         for file in files:
 
             try:
@@ -29,10 +30,9 @@ async def process_documents(files):
 
                 logger.info(f"[{file.filename}] OCR Stage - Image received")
 
-                # notify frontend OCR started
                 yield {"type": "ocr_started", "filename": file.filename, "status": "processing"}
 
-                # call existing OCR (keeps return semantics)
+                # call OCR
                 final_data = await run_glm_ocr(contents)
 
                 if not final_data:
@@ -41,7 +41,6 @@ async def process_documents(files):
                     results.append({"filename": file.filename, "status": "error", "error": "OCR failed"})
                     continue
 
-                # store and notify OCR completed
                 results.append({
                     "filename": file.filename,
                     "data": final_data,
@@ -64,52 +63,62 @@ async def process_documents(files):
     # --- PHASE 2: Classification ---
     ocr_results_dict = {res["filename"]: res["data"] for res in results if res.get("status") == "success"}
 
-    if ocr_results_dict:
-        yield {"type": "phase_started", "phase": "classification", "total_files": len(ocr_results_dict)}
-        classifications = router.classify_documents(ocr_results_dict)
-        for res in results:
-            if res.get("status") == "success":
-                doc_type = classifications.get(res["filename"], "unknown")
-                res["document_type"] = doc_type
-                logger.info(f"[{res['filename']}] Classification Stage - Classified as: {doc_type}")
-
-        yield {"type": "classification_completed", }
-
-    # --- PHASE 3: LLM Extraction (batch notifications) ---
-    yield {"type": "phase_started", "phase": "extraction"}
-    for res in results:
-        if res.get("status") != "success":
-            continue
-
-        doc_type = res.get("document_type", "unknown")
-        ocr_input = res.get("ocr_text") or str(res.get("data", ""))
-
-        yield {"type": "extraction_started", "filename": res["filename"], "document_type": doc_type}
-
+    if not ocr_results_dict:
+        # If no OCR success, immediately go to validation phase (which will be empty)
+        pass
+    else:
         try:
-            final_json = await run_llm_extraction(
-                ocr_input,
-                SCHEMAS.get(doc_type, {}),
-                PROMPTS.get(doc_type, "")
-            )
+            with LlamaServer() as llama:
+                yield {"type": "phase_started", "phase": "classification", "total_files": len(ocr_results_dict)}
+                classifications = router.classify_documents(ocr_results_dict)
+                for res in results:
+                    if res.get("status") == "success":
+                        doc_type = classifications.get(res["filename"], "unknown")
+                        res["document_type"] = doc_type
+                        logger.info(f"[{res['filename']}] Classification Stage - Classified as: {doc_type}")
 
-            extracted = final_json.get("extracted_data", final_json)
-            final_output.append({
-                "filename": res["filename"],
-                "document_type": doc_type,
-                "extracted_data": extracted
-            })
+                yield {"type": "classification_completed", }
 
-            yield {"type": "extraction_completed", "filename": res["filename"],}
+                # --- PHASE 3: Json mapping ---
+                yield {"type": "phase_started", "phase": "extraction"}
+                for res in results:
+                    if res.get("status") != "success":
+                        continue
+
+                    doc_type = res.get("document_type", "unknown")
+                    ocr_input = res.get("ocr_text") or str(res.get("data", ""))
+
+                    yield {"type": "extraction_started", "filename": res["filename"], "document_type": doc_type}
+
+                    try:
+                        final_json = await run_llm_json_mapping(
+                            ocr_input,
+                            SCHEMAS.get(doc_type, {}),
+                            PROMPTS.get(doc_type, "")
+                        )
+
+                        extracted = final_json.get("extracted_data", final_json)
+                        final_output.append({
+                            "filename": res["filename"],
+                            "document_type": doc_type,
+                            "extracted_data": extracted
+                        })
+
+                        yield {"type": "extraction_completed", "filename": res["filename"],}
+
+                    except Exception as e:
+                        logger.error(f"[{res['filename']}] LLM Extraction failed: {e}")
+                        yield {"type": "extraction_failed", "filename": res["filename"], "error": str(e)}
+                        res["status"] = "error"
+                        res["error"] = str(e)
+
+                    if "ocr_text" in res:
+                        del res["ocr_text"]
 
         except Exception as e:
-            logger.error(f"[{res['filename']}] LLM Extraction failed: {e}")
-            yield {"type": "extraction_failed", "filename": res["filename"], "error": str(e)}
-            res["status"] = "error"
-            res["error"] = str(e)
-
-        if "ocr_text" in res:
-            del res["ocr_text"]
+            logger.error(f"Llama server or classification/extraction failed: {e}")
+            yield {"type": "error", "error": "Classification/Extraction phase failed"}
+            return
 
     # --- PHASE 4: Validation ---
     validated_documents = []
