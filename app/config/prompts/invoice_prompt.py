@@ -5,7 +5,7 @@ INVOICE_PROMPT = (
             "- Extract invoice_number, sc_number, invoice_date (normalize to YYYY-MM-DD). "
 
             "PARTIES:"
-            "- Extract consignee name and passport (digits only). "
+            "- Extract consignee name and passport (digits only) ONLY from the (To:) / consignee section. Never use names from the company header, issuer, seller, exporter, or (From:) section."
 
             "TRANSPORT:"
             "- Extract departure and arrival locations. "
@@ -23,7 +23,7 @@ INVOICE_PROMPT = (
             "- description = main product name BEFORE any technical identifier or code. "
             "  * Must represent the human-readable product name. "
             "  * Must NOT include serial numbers, VINs, or reference codes. "
-            "- vin = any unique structured identifier if present (e.g., VIN, serial number). "
+            "- vin MUST be exactly 17 characters"
             "- quantity = integer value. "
             "- unit_price = numeric value. "
             "- line_total = numeric value. "

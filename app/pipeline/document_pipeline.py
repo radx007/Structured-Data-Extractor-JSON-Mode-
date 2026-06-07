@@ -2,21 +2,34 @@ from app.services import DocumentRouter, run_glm_ocr, run_llm_json_mapping
 from app.services.reconciliation.report_builder import build_final_report
 from app.services.validation.parser import validate_document
 from app.utils.logging import logger
+from app.utils.glm_server import get_ocr_server
 from app.utils.llama_server import LlamaServer
 from app.config import settings, SCHEMAS, PROMPTS
 
 
-
 router = DocumentRouter()
+
 
 async def process_documents(files):
     results = []
     final_output = []
 
-    try:
-        # --- PHASE 1: OCR & EXTRACTION ---
-        for file in files:
+    # ------------------------------------------------------------------ #
+    # PHASE 1: OCR — start GLM-OCR server, run all images, then stop it  #
+    # ------------------------------------------------------------------ #
+    ocr_server = get_ocr_server()
 
+    try:
+        import asyncio
+        await asyncio.to_thread(ocr_server.start)
+        logger.info("GLM-OCR server started for OCR phase.")
+    except Exception as e:
+        logger.error(f"Failed to start GLM-OCR server: {e}")
+        yield {"type": "error", "error": "OCR Server failed to initialize"}
+        return
+
+    try:
+        for file in files:
             try:
                 content_type = file.content_type or ""
                 if not content_type.startswith("image/"):
@@ -29,10 +42,8 @@ async def process_documents(files):
                     continue
 
                 logger.info(f"[{file.filename}] OCR Stage - Image received")
-
                 yield {"type": "ocr_started", "filename": file.filename, "status": "processing"}
 
-                # call OCR
                 final_data = await run_glm_ocr(contents)
 
                 if not final_data:
@@ -41,45 +52,45 @@ async def process_documents(files):
                     results.append({"filename": file.filename, "status": "error", "error": "OCR failed"})
                     continue
 
-                results.append({
-                    "filename": file.filename,
-                    "data": final_data,
-                    "status": "success"
-                })
-
-                yield {"type": "ocr_completed", "filename": file.filename, "status": "success",}
-                logger.info(f"[{file.filename}] OCR Success.")
+                results.append({"filename": file.filename, "data": final_data, "status": "success"})
+                yield {"type": "ocr_completed", "filename": file.filename, "status": "success"}
 
             except Exception as e:
                 logger.error(f"[{file.filename}] OCR failed: {e}")
                 yield {"type": "ocr_failed", "filename": file.filename, "error": str(e)}
                 results.append({"filename": file.filename, "status": "error", "error": str(e)})
 
-    except Exception as startup_error:
-        logger.error(f"Failed to start OCR server: {startup_error}")
-        yield {"type": "error", "error": "OCR Server failed to initialize"}
-        return
+    finally:
+        # Always stop OCR server after all images are done — frees VRAM for LLM
+        await asyncio.to_thread(ocr_server.stop)
+        logger.info("GLM-OCR server stopped. VRAM free for LLM.")
 
-    # --- PHASE 2: Classification ---
-    ocr_results_dict = {res["filename"]: res["data"] for res in results if res.get("status") == "success"}
+    # ------------------------------------------------------------------ #
+    # PHASE 2 & 3: Classification + Extraction — LLM server starts here  #
+    # ------------------------------------------------------------------ #
+    ocr_results_dict = {
+        res["filename"]: res["data"]
+        for res in results
+        if res.get("status") == "success"
+    }
 
     if not ocr_results_dict:
-        # If no OCR success, immediately go to validation phase (which will be empty)
         pass
     else:
         try:
+            # LlamaServer starts here (VRAM now free from OCR server)
             with LlamaServer() as llama:
                 yield {"type": "phase_started", "phase": "classification", "total_files": len(ocr_results_dict)}
                 classifications = router.classify_documents(ocr_results_dict)
+
                 for res in results:
                     if res.get("status") == "success":
                         doc_type = classifications.get(res["filename"], "unknown")
                         res["document_type"] = doc_type
-                        logger.info(f"[{res['filename']}] Classification Stage - Classified as: {doc_type}")
 
-                yield {"type": "classification_completed", }
+                yield {"type": "classification_completed"}
 
-                # --- PHASE 3: Json mapping ---
+                # --- PHASE 3: JSON mapping ---
                 yield {"type": "phase_started", "phase": "extraction"}
                 for res in results:
                     if res.get("status") != "success":
@@ -104,7 +115,7 @@ async def process_documents(files):
                             "extracted_data": extracted
                         })
 
-                        yield {"type": "extraction_completed", "filename": res["filename"],}
+                        yield {"type": "extraction_completed", "filename": res["filename"]}
 
                     except Exception as e:
                         logger.error(f"[{res['filename']}] LLM Extraction failed: {e}")
@@ -120,7 +131,9 @@ async def process_documents(files):
             yield {"type": "error", "error": "Classification/Extraction phase failed"}
             return
 
-    # --- PHASE 4: Validation ---
+    # ------------------------------------------------------------------ #
+    # PHASE 4: Validation                                                #
+    # ------------------------------------------------------------------ #
     validated_documents = []
     failed_docs = []
 
@@ -135,18 +148,24 @@ async def process_documents(files):
         validated_documents.append({"filename": item["filename"], **vres["data"]})
         yield {"type": "validation_completed", "filename": item["filename"], "data": vres["data"]}
 
-    yield {"type": "validation_phase_completed", "total_validated": len(validated_documents), "total_failed": len(failed_docs)}
-
-    # --- PHASE 5: Reconciliation ---
-    yield {"type": "phase_started", "phase": "reconciliation"}
-    final_report = build_final_report(validated_documents)
-
-    yield {"type": "reconciliation_completed", }
-
-    completed = {
-        "documents": validated_documents,
-        "failed_documents": failed_docs,
-        "decision": final_report
+    yield {
+        "type": "validation_phase_completed",
+        "total_validated": len(validated_documents),
+        "total_failed": len(failed_docs)
     }
 
-    yield {"type": "completed", "result": completed}
+    # ------------------------------------------------------------------ #
+    # PHASE 5: Reconciliation                                            #
+    # ------------------------------------------------------------------ #
+    yield {"type": "phase_started", "phase": "reconciliation"}
+    final_report = build_final_report(validated_documents)
+    yield {"type": "reconciliation_completed"}
+
+    yield {
+        "type": "completed",
+        "result": {
+            "documents": validated_documents,
+            "failed_documents": failed_docs,
+            "decision": final_report
+        }
+    }
