@@ -1,0 +1,26 @@
+services:
+  app:
+    image: ghcr.io/radx007/dz-gatekeeper:latest 
+    # build:
+    #   context: .
+
+    container_name: vehicle-import-system
+    ipc: host 
+    ports:
+      - "8000:8000"
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./models:/models
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    restart: unless-stopped
