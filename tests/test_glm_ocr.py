@@ -1,29 +1,33 @@
 import pytest
+import httpx
+from unittest.mock import AsyncMock, MagicMock
 from app.services.glm_ocr import run_glm_ocr
-
-
-class DummyProc:
-    def __init__(self, code, out="", err=""):
-        self.returncode = code
-        self.stdout = out
-        self.stderr = err
 
 
 @pytest.mark.asyncio
 async def test_glm_ocr_ok(monkeypatch):
-    def fake_run(*args, **kwargs):
-        return DummyProc(0, out="ocr text")
+    # Mock httpx response
+    mock_response = MagicMock()
+    mock_response.raise_for_status = MagicMock()
+    mock_response.json.return_value = {
+        "choices": [{"message": {"content": "ocr text"}}]
+    }
 
-    monkeypatch.setattr("app.services.glm_ocr.subprocess.run", fake_run)
+    # Mock the httpx AsyncClient.post
+    async def fake_post(*args, **kwargs):
+        return mock_response
+
+    monkeypatch.setattr("httpx.AsyncClient.post", fake_post)
     res = await run_glm_ocr(b"img")
     assert res == "ocr text"
 
 
 @pytest.mark.asyncio
 async def test_glm_ocr_fail(monkeypatch):
-    def fake_run(*args, **kwargs):
-        return DummyProc(1, out="", err="fail")
+    # Simulate connection error
+    async def fake_post(*args, **kwargs):
+        raise httpx.ConnectError("connection refused")
 
-    monkeypatch.setattr("app.services.glm_ocr.subprocess.run", fake_run)
+    monkeypatch.setattr("httpx.AsyncClient.post", fake_post)
     res = await run_glm_ocr(b"img")
     assert res == ""
