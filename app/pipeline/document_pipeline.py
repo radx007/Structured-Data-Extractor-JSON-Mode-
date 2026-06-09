@@ -146,7 +146,6 @@ async def process_documents(files):
             continue
 
         validated_documents.append({"filename": item["filename"], **vres["data"]})
-        yield {"type": "validation_completed", "filename": item["filename"], "data": vres["data"]}
 
     yield {
         "type": "validation_phase_completed",
